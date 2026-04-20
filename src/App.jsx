@@ -2,12 +2,48 @@
 // import reactLogo from "./assets/react.svg";
 // import viteLogo from "./assets/vite.svg";
 // import heroImg from "./assets/hero.png";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import "./App.css";
+import Body from "./components/Body";
+import Login from "./components/Login";
+
+import Profile from "./components/Profile";
+import { Provider } from "react-redux";
+import appStore from "./utils/appStore";
+import Feed from "./components/feed";
+import Card from "./components/Card";
+
+const router = createBrowserRouter([
+  {
+    path: "/",
+    element: <Body />,
+    children: [
+      {
+        path: "/profile",
+        element: <Profile />,
+      },
+      {
+        path: "/feed",
+        element: <Feed/>,
+      },
+      {
+        path: "/login",
+        element: <Login />,
+      },
+      {
+        path: "/card",
+        element: <Card />,
+      },
+    ],
+  },
+]);
 
 function App() {
-  return <div>
-   <div>hello world</div> 
-  </div>;
+  return (
+    <Provider store={appStore}>
+      <RouterProvider router={router} />
+    </Provider>
+  );
 }
 
 export default App;
