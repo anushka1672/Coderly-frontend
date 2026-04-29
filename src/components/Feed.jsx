@@ -7,31 +7,42 @@ import { addUserFeed } from "../utils/feedSlice";
 export default function Feed() {
   const dispatch = useDispatch();
   const feed = useSelector((state) => state.feed);
-  console.log("feed at feed",feed);
-  
+  // console.log("feed at feed",feed);
+  const currentUser = feed[0];
+
   async function handleGetFeed() {
     try {
       const res = await axios.get(
-        "http://localhost:7777/feed?page=1&limit=4",
+        "http://localhost:7777/feed?page=1&limit=10",
 
         { withCredentials: true },
       );
-      console.log("feed res", res);
+      // console.log("feed res", res);
 
       dispatch(addUserFeed(res.data.users));
     } catch (err) {
       console.log(err);
     }
   }
+
+  useEffect(() => {
+    if (feed.length === 0) {
+      handleGetFeed();
+    }
+  }, [feed.length]);
+
+
   useEffect(() => {
     handleGetFeed();
   }, []);
 
+  if (feed.length === 0) {
+    return <div className="text-white text-center mt-20">Loading...</div>;
+  }
+
   return (
     <div className="w-full ">
-      {feed? feed.map((el) => {
-           return <Card data={el} />;
-          }):null}
+      <Card data={currentUser} />;
     </div>
   );
 }

@@ -14,7 +14,7 @@ export default function Body() {
   async function getUserFunction() {
     try {
       if (user) {
-        return 
+       return  navigate("/feed")
       }
       const res = await axios.get("http://localhost:7777/profile", {
         withCredentials: true,
@@ -31,13 +31,13 @@ export default function Body() {
 
   useEffect(() => {
     getUserFunction();
-  }, []);
+  }, [user]);
 
   return (
     <div>
       <Navbar />
       <Outlet />
-      <Link to="/login">login</Link>
+      
     </div>
   );
 }

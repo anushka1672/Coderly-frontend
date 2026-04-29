@@ -12,6 +12,9 @@ import { Provider } from "react-redux";
 import appStore from "./utils/appStore";
 import Feed from "./components/feed";
 import Card from "./components/Card";
+import Connections from "./components/connections";
+import Request from "./components/Request";
+import Signup from "./components/Signup";
 
 const router = createBrowserRouter([
   {
@@ -27,8 +30,20 @@ const router = createBrowserRouter([
         element: <Feed/>,
       },
       {
+        path: "/connections",
+        element: <Connections/>,
+      },
+      {
         path: "/login",
         element: <Login />,
+      },
+      {
+        path: "/signup",
+        element: <Signup/>,
+      },
+      {
+        path: "/request",
+        element: <Request />,
       },
       {
         path: "/card",
