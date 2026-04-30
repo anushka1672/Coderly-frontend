@@ -42,7 +42,7 @@ export default function Request() {
 
   const handleRequest = async (requestId, status) => {
     try {
-      await axios.post(`${BASE_URL}+/request/review/${status}/${requestId}`, {}, {
+      await axios.post(`${BASE_URL}/request/review/${status}/${requestId}`, {}, {
         withCredentials: true,
       });
       dispatch(removeRequest(requestId));

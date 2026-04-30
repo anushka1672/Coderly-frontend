@@ -33,9 +33,7 @@ export default function Feed() {
   }, [feed.length]);
 
 
-  useEffect(() => {
-    handleGetFeed();
-  }, []);
+  
 
   if (feed.length === 0) {
     return <div className="text-white text-center mt-20">Loading...</div>;
