@@ -7,29 +7,23 @@ import { BASE_URL } from "../utils/constant";
 
 export default function Connections() {
   const dispatch = useDispatch();
-  const connections = useSelector((store) => store.connection); 
+  const connections = useSelector((store) => store.connection);
   const [loading, setLoading] = useState(true);
   const user = useSelector((state) => state.user);
-  // const Id = user._id;
   const navigate = useNavigate();
-useEffect(() => {
-    if (!user) {
-      navigate("/login");
-    }
-  }, [user]);
-  
-  
 
+  useEffect(() => {
+    if (!user) navigate("/login");
+  }, [user, navigate]);
 
   async function getConnections() {
     try {
       const res = await axios.get(`${BASE_URL}/user/connections`, {
         withCredentials: true,
       });
-      console.log("user connections", res.data.data);
       dispatch(addConnections(res.data.data));
     } catch (error) {
-      console.error("Error fetching connections:", error);
+      console.error(error);
     } finally {
       setLoading(false);
     }
@@ -41,104 +35,104 @@ useEffect(() => {
 
   if (loading) {
     return (
-      <div className="flex justify-center items-center h-screen bg-gradient-to-br from-gray-900 to-gray-800">
-        <div className="text-gray-300 text-xl">Loading connections...</div>
+      <div className="flex justify-center items-center min-h-screen bg-gradient-to-br from-gray-900 to-gray-800">
+        <div className="text-gray-300 text-lg sm:text-xl">
+          Loading connections...
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 py-8 px-4">
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 py-6 px-3 sm:px-6">
       <div className="max-w-7xl mx-auto">
-        <h1 className="text-3xl font-bold text-white mb-8 text-center">
+
+        {/* Heading */}
+        <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-white mb-6 sm:mb-8 text-center">
           Connections ({connections.length})
         </h1>
-        
+
+        {/* Empty State */}
         {connections.length === 0 ? (
-          <div className="text-center py-12 bg-gray-800/50 rounded-2xl">
-            <p className="text-gray-400 text-lg">No connections yet</p>
+          <div className="text-center py-10 bg-gray-800/50 rounded-2xl">
+            <p className="text-gray-400 text-sm sm:text-lg">
+              No connections yet
+            </p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {connections.map((connection) => (
-              <div
-                key={connection._id}
-                className="bg-gray-800/90 rounded-2xl border border-gray-700 overflow-hidden hover:border-gray-600 transition-all duration-300"
-              >
-                <div className="relative">
-                  {/* Profile Image Placeholder */}
-                  <div className="w-full h-48 bg-gradient-to-r from-pink-500/30 to-purple-500/30 flex items-center justify-center">
-                    <div className="w-24 h-24 bg-gray-700 rounded-full flex items-center justify-center border-2 border-pink-400/50">
-                      <span className="text-4xl font-bold text-pink-300">
-                        {connection.fromUserName?.charAt(0).toUpperCase() || "U"}
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+            {connections.map((connection) => {
+
+              const isMe = connection.fromUserName === user.firstName;
+              const displayName = isMe
+                ? connection.toUserName
+                : connection.fromUserName;
+
+              return (
+                <div
+                  key={connection._id}
+                  className="bg-gray-800/90 rounded-2xl border border-gray-700 overflow-hidden"
+                >
+
+                  {/* Image / Avatar */}
+                  <div className="relative">
+                    <div className="w-full h-36 sm:h-48 bg-gradient-to-r from-pink-500/30 to-purple-500/30 flex items-center justify-center">
+                      <div className="w-16 h-16 sm:w-20 sm:h-20 bg-gray-700 rounded-full flex items-center justify-center border-2 border-pink-400/50">
+                        <span className="text-xl sm:text-3xl text-pink-300 font-bold">
+                          {displayName?.charAt(0)?.toUpperCase() || "U"}
+                        </span>
+                      </div>
+                    </div>
+
+                    {/* Status */}
+                    <div className="absolute top-2 right-2">
+                      <span
+                        className={`text-xs px-2 py-1 rounded-full ${
+                          connection.status === "accepted"
+                            ? "bg-green-500/20 text-green-300"
+                            : connection.status === "interested"
+                            ? "bg-yellow-500/20 text-yellow-300"
+                            : "bg-gray-500/20 text-gray-300"
+                        }`}
+                      >
+                        {connection.status || "pending"}
                       </span>
                     </div>
                   </div>
-                  
-                  {/* Status Badge - Positioned at top right */}
-                  <div className="absolute top-4 right-4">
-                    <span
-                      className={`inline-block px-3 py-1 rounded-full text-sm font-medium shadow-md ${
-                        connection.status === "accepted"
-                          ? "bg-green-500/20 text-green-300 border border-green-500/30"
-                          : connection.status === "interested"
-                          ? "bg-yellow-500/20 text-yellow-300 border border-yellow-500/30"
-                          : "bg-gray-500/20 text-gray-300 border border-gray-500/30"
-                      }`}
-                    >
-                      {connection.status || "pending"}
-                    </span>
+
+                  {/* Content */}
+                  <div className="p-4 sm:p-6">
+
+                    <h2 className="text-lg sm:text-xl font-bold text-white">
+                      {displayName}
+                    </h2>
+
+                    <p className="text-gray-400 text-xs sm:text-sm mb-3">
+                      @{displayName?.toLowerCase()}
+                    </p>
+
+                    <p className="text-gray-400 text-xs sm:text-sm mb-4">
+                      {new Date(connection.createdAt).toLocaleDateString()}
+                    </p>
+
+                    {/* Buttons */}
+                    <div className="flex gap-2">
+                      <button className="flex-1 bg-pink-500/20 text-pink-300 text-xs sm:text-sm py-2 rounded-lg">
+                        View
+                      </button>
+
+                      <button className="flex-1 bg-gray-700 text-gray-300 text-xs sm:text-sm py-2 rounded-lg">
+                        Message
+                      </button>
+                    </div>
+
                   </div>
                 </div>
-                
-                <div className="p-6">
-                  {/* Name */}
-                  <h2 className="text-2xl font-bold text-white mb-2">
-                    {connection.fromUserName === user.firstName ? (
-                      <div>{connection.toUserName}</div>
-                    ) : (
-                      <div>{connection.fromUserName}</div>
-                    )}
-                  </h2>
-                  
-                  {/* Email/User ID (optional) */}
-                  <p className="text-gray-400 text-sm mb-4">
-                    @{connection.fromUserName?.toLowerCase() || "user"}
-                  </p>
-                  
-                  {/* Connection Date */}
-                  <div className="flex items-center gap-2 text-gray-400 text-sm mb-4">
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                    </svg>
-                    <span>
-                      Connected on {new Date(connection.createdAt).toLocaleDateString()}
-                    </span>
-                  </div>
-                  
-                  {/* Action Buttons */}
-                  <div className="flex gap-3 mt-6">
-                    <button
-                      onClick={() => {
-                        console.log("View profile:", connection.fromUserId);
-                      }}
-                      className="flex-1 bg-pink-500/20 text-pink-300 font-semibold py-2 px-4 rounded-xl transition-all duration-200 hover:bg-pink-500/30 border border-pink-500/30"
-                    >
-                      View Profile
-                    </button>
-                    <button
-                      onClick={() => {
-                        console.log("Message:", connection.fromUserId);
-                      }}
-                      className="flex-1 bg-gray-700 text-gray-300 font-semibold py-2 px-4 rounded-xl transition-all duration-200 hover:bg-gray-600 border border-gray-600"
-                    >
-                      Message
-                    </button>
-                  </div>
-                </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
+
         )}
       </div>
     </div>
