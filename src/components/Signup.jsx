@@ -1,6 +1,7 @@
 import axios from "axios";
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { BASE_URL } from "../utils/constant";
 
 export default function Signup() {
   const [email, setEmail] = useState("");
@@ -13,7 +14,7 @@ export default function Signup() {
 
   async function handleSignup(){
        try{
-      const response = await axios.post("http://localhost:7777/signup",{
+      const response = await axios.post(`${BASE_URL}/signup`,{
        email, password, firstName,lastName, age,imgUrl
       },{withCredentials:true})
       console.log("Response of signup:", response)

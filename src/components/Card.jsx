@@ -2,6 +2,7 @@ import axios from "axios";
 import React from "react";
 import { removeUserFeed } from "../utils/feedSlice";
 import { useDispatch } from "react-redux";
+import { BASE_URL } from "../utils/constant";
 
 export default function Card({ data }) {
   const { firstName, imgUrl, email, _id, age, gender } = data;
@@ -9,7 +10,7 @@ export default function Card({ data }) {
 
   const handleRequest = async (_id,status) => {
     try {
-      const res = await axios.post(`http://localhost:7777/request/send/${status}/${_id}`, {}, {
+      const res = await axios.post(`${BASE_URL}/request/send/${status}/${_id}`, {}, {
         withCredentials: true,
       });
       console.log("interested data", res);

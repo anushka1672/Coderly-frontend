@@ -3,6 +3,7 @@ import Card from "./Card";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
 import { addUserFeed } from "../utils/feedSlice";
+import { BASE_URL } from "../utils/constant";
 
 export default function Feed() {
   const dispatch = useDispatch();
@@ -13,7 +14,7 @@ export default function Feed() {
   async function handleGetFeed() {
     try {
       const res = await axios.get(
-        "http://localhost:7777/feed?page=1&limit=10",
+        `${BASE_URL}/feed?page=1&limit=10`,
 
         { withCredentials: true },
       );

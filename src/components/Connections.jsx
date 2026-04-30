@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { addConnections } from "../utils/connectionSlice";
 import { useNavigate } from "react-router-dom";
+import { BASE_URL } from "../utils/constant";
 
 export default function Connections() {
   const dispatch = useDispatch();
@@ -22,7 +23,7 @@ useEffect(() => {
 
   async function getConnections() {
     try {
-      const res = await axios.get("http://localhost:7777/user/connections", {
+      const res = await axios.get(`${BASE_URL}/user/connections`, {
         withCredentials: true,
       });
       console.log("user connections", res.data.data);

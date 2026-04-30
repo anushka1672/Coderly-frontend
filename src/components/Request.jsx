@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { addRequest, removeRequest } from '../utils/requestSlice';
 import { useNavigate } from 'react-router-dom';
+import { BASE_URL } from '../utils/constant';
 
 export default function Request() {
   const dispatch = useDispatch();
@@ -22,7 +23,7 @@ export default function Request() {
   async function getRequest() {
     try {
       setLoading(true);
-      const res = await axios.get("http://localhost:7777/user/request/received", {
+      const res = await axios.get(`${BASE_URL}/user/request/received`, {
         withCredentials: true,
       });
       dispatch(addRequest(res.data.data));
@@ -41,7 +42,7 @@ export default function Request() {
 
   const handleRequest = async (requestId, status) => {
     try {
-      await axios.post(`http://localhost:7777/request/review/${status}/${requestId}`, {}, {
+      await axios.post(`${BASE_URL}+/request/review/${status}/${requestId}`, {}, {
         withCredentials: true,
       });
       dispatch(removeRequest(requestId));
