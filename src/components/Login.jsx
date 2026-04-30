@@ -8,6 +8,7 @@ export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const user = useSelector((state) => state.user);
+  const [err, setErr] = useState("");
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -67,6 +68,12 @@ export default function Login() {
             onChange={(e) => setPassword(e.target.value)}
             className="w-full px-3 py-2 rounded-xl bg-gray-700 border border-gray-600 text-white text-sm placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-pink-400 focus:border-transparent"
           />
+
+             {err && (
+            <div className="bg-red-500/10 border border-red-500/20 rounded-lg p-2">
+              <p className="text-red-400 text-xs text-center">{err} 😢</p>
+            </div>
+          )}
 
           {/* Login Button */}
           <button 
