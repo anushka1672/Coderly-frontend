@@ -12,9 +12,10 @@ import { Provider } from "react-redux";
 import appStore from "./utils/appStore";
 import Feed from "./components/feed";
 import Card from "./components/Card";
-import Connections from "./components/connections";
+
 import Request from "./components/Request";
 import Signup from "./components/Signup";
+import Connections from "./components/Connections";
 
 const router = createBrowserRouter([
   {
