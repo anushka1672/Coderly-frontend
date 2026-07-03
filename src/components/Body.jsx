@@ -5,6 +5,7 @@ import Login from "./Login";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { addUser } from "../utils/userSlice";
+import { BASE_URL } from "../utils/constant";
 
 export default function Body() {
   const dispatch = useDispatch();
@@ -16,7 +17,7 @@ export default function Body() {
       if (user) {
        return  navigate("/feed")
       }
-      const res = await axios.get("http://localhost:7777/profile", {
+      const res = await axios.get(`${BASE_URL}/profile`, {
         withCredentials: true,
       });
       console.log("anushka", res.data);

@@ -23,11 +23,14 @@ export default function Login() {
 
   async function handleLogin() {
     try {
-      const response = await axios.post(BASE_URL+"/login", {
+      const response = await axios.post(BASE_URL + "/login", {
         email,
-        password
+        password,
       }, { withCredentials: true });
       console.log("Response:", response.data);
+      if (response.data.token) {
+        axios.defaults.headers.common.Authorization = `Bearer ${response.data.token}`;
+      }
       dispatch(addUser(response.data));
       navigate("/feed");
     } catch (error) {
