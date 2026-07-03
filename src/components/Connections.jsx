@@ -5,16 +5,19 @@ import { addConnections } from "../utils/connectionSlice";
 import { useNavigate } from "react-router-dom";
 import { BASE_URL } from "../utils/constant";
 
+
 export default function Connections() {
   const dispatch = useDispatch();
   const connections = useSelector((store) => store.connection);
   const [loading, setLoading] = useState(true);
-  const user = useSelector((state) => state.user);
   const navigate = useNavigate();
+  const user = useSelector((state) => state.user);
+ 
 
   useEffect(() => {
     if (!user) navigate("/login");
   }, [user, navigate]);
+
 
   async function getConnections() {
     try {
@@ -43,98 +46,82 @@ export default function Connections() {
     );
   }
 
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 py-6 px-3 sm:px-6">
-      <div className="max-w-7xl mx-auto">
+ return (
+  <div className="min-h-screen bg-gradient-to-br from-gray-950 via-gray-900 to-black py-10">
+    <div className="max-w-4xl mx-auto px-4">
 
-        {/* Heading */}
-        <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-white mb-6 sm:mb-8 text-center">
-          Connections ({connections.length})
-        </h1>
+      <h1 className="text-3xl font-bold text-white text-center mb-8">
+        Connections ({connections.length})
+      </h1>
 
-        {/* Empty State */}
-        {connections.length === 0 ? (
-          <div className="text-center py-10 bg-gray-800/50 rounded-2xl">
-            <p className="text-gray-400 text-sm sm:text-lg">
-              No connections yet
-            </p>
-          </div>
-        ) : (
+      <div className="space-y-5">
+        {connections.map((connection) => {
+          const isMe = connection.fromUserName === user.firstName;
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-            {connections.map((connection) => {
+          const displayName = isMe
+            ? connection.toUserName
+            : connection.fromUserName;
 
-              const isMe = connection.fromUserName === user.firstName;
-              const displayName = isMe
-                ? connection.toUserName
-                : connection.fromUserName;
+             const targetId =
+    connection.fromUserId === user._id
+      ? connection.toUserId
+      : connection.fromUserId;
 
-              return (
-                <div
-                  key={connection._id}
-                  className="bg-gray-800/90 rounded-2xl border border-gray-700 overflow-hidden"
-                >
-
-                  {/* Image / Avatar */}
-                  <div className="relative">
-                    <div className="w-full h-36 sm:h-48 bg-gradient-to-r from-pink-500/30 to-purple-500/30 flex items-center justify-center">
-                      <div className="w-16 h-16 sm:w-20 sm:h-20 bg-gray-700 rounded-full flex items-center justify-center border-2 border-pink-400/50">
-                        <span className="text-xl sm:text-3xl text-pink-300 font-bold">
-                          {displayName?.charAt(0)?.toUpperCase() || "U"}
-                        </span>
-                      </div>
-                    </div>
-
-                    {/* Status */}
-                    <div className="absolute top-2 right-2">
-                      <span
-                        className={`text-xs px-2 py-1 rounded-full ${
-                          connection.status === "accepted"
-                            ? "bg-green-500/20 text-green-300"
-                            : connection.status === "interested"
-                            ? "bg-yellow-500/20 text-yellow-300"
-                            : "bg-gray-500/20 text-gray-300"
-                        }`}
-                      >
-                        {connection.status || "pending"}
-                      </span>
-                    </div>
-                  </div>
-
-                  {/* Content */}
-                  <div className="p-4 sm:p-6">
-
-                    <h2 className="text-lg sm:text-xl font-bold text-white">
-                      {displayName}
-                    </h2>
-
-                    <p className="text-gray-400 text-xs sm:text-sm mb-3">
-                      @{displayName?.toLowerCase()}
-                    </p>
-
-                    <p className="text-gray-400 text-xs sm:text-sm mb-4">
-                      {new Date(connection.createdAt).toLocaleDateString()}
-                    </p>
-
-                    {/* Buttons */}
-                    <div className="flex gap-2">
-                      <button className="flex-1 bg-pink-500/20 text-pink-300 text-xs sm:text-sm py-2 rounded-lg">
-                        View
-                      </button>
-
-                      <button className="flex-1 bg-gray-700 text-gray-300 text-xs sm:text-sm py-2 rounded-lg">
-                        Message
-                      </button>
-                    </div>
-
-                  </div>
+          return (
+            <div
+              key={connection._id}
+              className="bg-gray-900 border border-gray-800 rounded-2xl px-6 py-5 flex justify-between items-center shadow-lg hover:border-pink-500/40 hover:shadow-pink-500/10 transition-all duration-300"
+            >
+              {/* Left */}
+              <div className="flex items-center gap-5">
+                <div className="w-16 h-16 rounded-full bg-gradient-to-r from-pink-500/30 to-purple-500/30 flex items-center justify-center border border-pink-400/40">
+                  <span className="text-2xl font-bold text-pink-300">
+                    {displayName?.charAt(0)?.toUpperCase()}
+                  </span>
                 </div>
-              );
-            })}
-          </div>
 
-        )}
+                <div>
+                  <h2 className="text-xl font-semibold text-white">
+                    {displayName}
+                  </h2>
+
+                  <p className="text-gray-400">
+                    @{displayName?.toLowerCase()}
+                  </p>
+
+                  <p className="text-gray-500 text-sm mt-1">
+                    Connected on{" "}
+                    {new Date(
+                      connection.createdAt
+                    ).toLocaleDateString()}
+                  </p>
+                </div>
+              </div>
+
+              {/* Right */}
+              <div className="flex items-center gap-4">
+                <span
+                  className={`px-3 py-1 rounded-full text-xs font-medium ${
+                    connection.status === "accepted"
+                      ? "bg-green-500/20 text-green-300"
+                      : "bg-yellow-500/20 text-yellow-300"
+                  }`}
+                >
+                  {connection.status}
+                </span>
+
+                <button className="bg-pink-600 hover:bg-pink-700 px-5 py-2 rounded-xl text-white font-medium transition-all"
+                onClick={ ()=>navigate(`/chat/${targetId}`)}
+                >
+                  chat
+                </button>
+              </div>
+            </div>
+          );
+        })}
       </div>
+
     </div>
-  );
+  </div>
+);
 }

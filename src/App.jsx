@@ -16,6 +16,7 @@ import Card from "./components/Card";
 import Request from "./components/Request";
 import Signup from "./components/Signup";
 import Connections from "./components/Connections";
+import Chat from "./components/Chat";
 
 const router = createBrowserRouter([
   {
@@ -49,6 +50,10 @@ const router = createBrowserRouter([
       {
         path: "/card",
         element: <Card />,
+      },
+      {
+        path: "/chat/:targetId",
+        element: <Chat />,
       },
     ],
   },

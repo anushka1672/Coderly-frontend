@@ -10,7 +10,7 @@ export default function Card({ data }) {
 
   const handleRequest = async (_id,status) => {
     try {
-      const res = await axios.post(`${BASE_URL}/request/send/${status}/${_id}`, {}, {
+      const res = await axios.post(`${BASE_URL}/request/send/${status}/${_id}`,{},  {
         withCredentials: true,
       });
       console.log("interested data", res);

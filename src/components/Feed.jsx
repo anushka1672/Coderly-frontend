@@ -15,6 +15,7 @@ export default function Feed() {
     try {
       const res = await axios.get(
         `${BASE_URL}/feed?page=1&limit=10`,
+        
 
         { withCredentials: true },
       );

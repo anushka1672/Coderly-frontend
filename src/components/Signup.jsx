@@ -10,20 +10,60 @@ export default function Signup() {
   const [lastName, setLastName] = useState("");
   const [age, setAge] = useState("");
   const [imgUrl, setImageUrl] = useState("");
-   const navigate = useNavigate();
+  const navigate = useNavigate();
+  const [loadingFeedback, setLoadingFeedback] = useState(false);
+  const [feedback, setFeedback] = useState("");
+  const [err, setErr] = useState("");
 
-  async function handleSignup(){
-       try{
-      const response = await axios.post(`${BASE_URL}/signup`,{
-       email, password, firstName,lastName, age,imgUrl
-      },{withCredentials:true})
-      console.log("Response of signup:", response)
+  async function handleSignup() {
+    try {
+      const response = await axios.post(
+        `${BASE_URL}/signup`,
+        {
+          email,
+          password,
+          firstName,
+          lastName,
+          age,
+          imgUrl,
+        },
+        { withCredentials: true },
+      );
+      console.log("Response of signup:", response);
 
-    //   dispatch(addUser(response.data))
-     return navigate("/feed")
-    }catch(error){
-      console.log("Error:", error)
+      //   dispatch(addUser(response.data))
+      return navigate("/feed");
+    } catch (error) {
+      console.log("Error:", error);
+      setErr(error)
     }
+  }
+
+  async function checkProfileQuality() {
+    try {
+      setLoadingFeedback(true);
+      const res = await axios.post(
+        `${BASE_URL}/profile/review`,
+        {
+          email,
+          firstName,
+          lastName,
+          age,
+          imgUrl,
+        },
+        { withCredentials: true },
+      );
+
+      console.log(res.data.response);
+      setFeedback(res.data.feedback);
+      // setFeedback(res);
+    } catch (err) {
+     
+         console.log("ERROR MESSAGE:", err.message);
+         setErr(err.message)
+    }finally {
+    setLoadingFeedback(false);
+  }
   }
 
   return (
@@ -50,7 +90,7 @@ export default function Signup() {
                 type="text"
                 placeholder="First name"
                 value={firstName}
-                onChange={(e)=>setFirstName(e.target.value)}
+                onChange={(e) => setFirstName(e.target.value)}
                 className="w-full px-3 py-2 rounded-xl bg-gray-700 border border-gray-600 text-white text-sm placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-pink-400 focus:border-transparent"
               />
             </div>
@@ -59,7 +99,7 @@ export default function Signup() {
                 type="text"
                 placeholder="Last name"
                 value={lastName}
-                onChange={(e)=>setLastName(e.target.value)}
+                onChange={(e) => setLastName(e.target.value)}
                 className="w-full px-3 py-2 rounded-xl bg-gray-700 border border-gray-600 text-white text-sm placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-pink-400 focus:border-transparent"
               />
             </div>
@@ -70,7 +110,7 @@ export default function Signup() {
             type="number"
             placeholder="Age"
             value={age}
-            onChange={(e)=>setAge(e.target.value)}
+            onChange={(e) => setAge(e.target.value)}
             min="1"
             max="130"
             className="w-full px-3 py-2 rounded-xl bg-gray-700 border border-gray-600 text-white text-sm placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-pink-400 focus:border-transparent"
@@ -80,7 +120,7 @@ export default function Signup() {
           <input
             type="url"
             value={imgUrl}
-             onChange={(e)=>setImageUrl(e.target.value)}
+            onChange={(e) => setImageUrl(e.target.value)}
             placeholder="Image URL (optional)"
             className="w-full px-3 py-2 rounded-xl bg-gray-700 border border-gray-600 text-white text-sm placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-pink-400 focus:border-transparent"
           />
@@ -90,7 +130,7 @@ export default function Signup() {
             type="email"
             placeholder="Email"
             value={email}
-            onChange={(e)=>setEmail(e.target.value)}
+            onChange={(e) => setEmail(e.target.value)}
             className="w-full px-3 py-2 rounded-xl bg-gray-700 border border-gray-600 text-white text-sm placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-pink-400 focus:border-transparent"
           />
 
@@ -99,7 +139,7 @@ export default function Signup() {
             type="password"
             placeholder="Password"
             value={password}
-            onChange={(e)=>setPassword(e.target.value)}
+            onChange={(e) => setPassword(e.target.value)}
             className="w-full px-3 py-2 rounded-xl bg-gray-700 border border-gray-600 text-white text-sm placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-pink-400 focus:border-transparent"
           />
 
@@ -113,16 +153,42 @@ export default function Signup() {
             </p>
           </div>
 
+          <button
+            type="button"
+            onClick={checkProfileQuality}
+            className="w-full bg-purple-500 hover:bg-purple-400 text-white py-2 rounded-xl"
+          >
+            {loadingFeedback ? "Checking..." : "✨ Check Profile Quality"}
+          </button>
+
+          {feedback && (
+            <div className="bg-gray-700 text-gray-200 p-3 rounded-xl text-sm">
+              {feedback}
+            </div>
+          )}
+
           {/* Signup Button */}
-          <button className="w-full mt-4 bg-pink-500 hover:bg-pink-400 text-white font-semibold py-2.5 rounded-xl transition-all duration-200 shadow-md shadow-pink-500/20"
-          onClick={handleSignup}
+          <button
+            className="w-full mt-4 bg-pink-500 hover:bg-pink-400 text-white font-semibold py-2.5 rounded-xl transition-all duration-200 shadow-md shadow-pink-500/20"
+            onClick={handleSignup}
           >
             Sign up 💖
           </button>
 
+            {err && (
+            <div className="bg-red-500/10 border border-red-500/20 rounded-lg p-2">
+              <p className="text-red-400 text-xs text-center">{err} 😢</p>
+            </div>
+          )}
+
           {/* Footer text */}
           <p className="text-center text-xs text-gray-500 pt-2">
-            <span>if already signup <Link to={"/login"}><span className="text-red-500">Login</span></Link></span>
+            <span>
+              if already signup{" "}
+              <Link to={"/login"}>
+                <span className="text-red-500">Login</span>
+              </Link>
+            </span>
           </p>
         </div>
       </div>
