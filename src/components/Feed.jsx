@@ -8,6 +8,7 @@ import { BASE_URL } from "../utils/constant";
 export default function Feed() {
   const dispatch = useDispatch();
   const feed = useSelector((state) => state.feed);
+  console.log(feed)
   // console.log("feed at feed",feed);
   const currentUser = feed[0];
 
