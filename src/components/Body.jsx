@@ -15,7 +15,7 @@ export default function Body() {
   async function getUserFunction() {
     try {
       if (user) {
-       return  navigate("/feed")
+        return navigate("/feed");
       }
       const res = await axios.get(`${BASE_URL}/profile`, {
         withCredentials: true,
@@ -25,7 +25,7 @@ export default function Body() {
       dispatch(addUser(res.data));
     } catch (err) {
       console.log(err);
-      
+
       navigate("/login");
     }
   }
@@ -36,9 +36,8 @@ export default function Body() {
 
   return (
     <div>
-      <Navbar />
+      {window.location.pathname != "/login" && <Navbar />}
       <Outlet />
-      
     </div>
   );
 }
